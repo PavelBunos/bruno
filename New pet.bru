@@ -1,0 +1,49 @@
+meta {
+  name: New pet
+  type: http
+  seq: 1
+}
+
+post {
+  url: https://petstore.swagger.io/v2/pet
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "category": {
+      "name": "cats"
+    },
+    "name": "Garfield",
+    "photoUrls": [
+      "/images/pets/garfield.png"
+    ],
+    "tags": [
+      {
+        "name": "cute"
+      },
+      {
+        "name": "beautiful"
+      }
+    ],
+    "status": "available"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body: isJson
+  res.body.name: eq Garfield
+  res.body.photoUrls: isArray
+}
+
+script:post-response {
+  if (res.status == 200) {
+     bru.setEnvVar('petId', res.body.id) 
+  }
+}
+
+docs {
+  New pet create request
+}

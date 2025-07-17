@@ -1,0 +1,32 @@
+meta {
+  name: Get pets by tag
+  type: http
+  seq: 3
+}
+
+get {
+  url: https://petstore.swagger.io/v2/pet/findByStatus?status=available
+  body: none
+  auth: inherit
+}
+
+params:query {
+  status: available
+}
+
+headers {
+  accept: application/json
+}
+
+assert {
+  res.body: isArray
+}
+
+script:post-response {
+  if(res.getStatus() == 200) {
+    const jsonBody = res.getBody()
+    jsonBody.forEach(el => {
+      console.log(el.name)
+    })
+  }
+}

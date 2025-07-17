@@ -1,0 +1,50 @@
+meta {
+  name: Get pet by id
+  type: http
+  seq: 4
+}
+
+get {
+  url: https://petstore.swagger.io/v2/pet
+  body: none
+  auth: inherit
+}
+
+headers {
+  accept: application/json
+}
+
+script:pre-request {
+  req.setUrl(req.url + "/" + bru.getEnvVar('petId'))
+}
+
+tests {
+  test("Updated pet data assertion", () => {
+    expect(res.getBody()).to.eql({
+      "id": bru.getEnvVar('petId'),
+      "category": {
+        "id": 0,
+        "name": "cats"
+      },
+      "name": "Garfield",
+      "photoUrls": [
+        "/images/pets/garfield.png"
+      ],
+      "tags": [
+        {
+          "id": 0,
+          "name": "cute"
+        },
+        {
+          "id": 0,
+          "name": "beautiful"
+        },
+        {
+          "id": 0,
+          "name": "bites"
+        }
+      ],
+      "status": "available"
+    })
+  })
+}
